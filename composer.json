@@ -1,0 +1,19 @@
+{
+    "name": "neijcsilva/ecommerce",
+    "authors": [
+        {
+            "name": "TECSIS Tecnologia de Sistemas",
+            "email": "tecsis-tec@uol.com.br"
+        }
+    ],
+    "require": {
+    	"phpmailer/phpmailer":"5.2.27",
+    	"slim/slim":"2.0",
+    	"rain/raintpl":"3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tecsis\\": "vendor\\tecsisbr\\php-classes\\src"
+        }
+    }
+}
