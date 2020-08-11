@@ -5,31 +5,60 @@ use \Tecsis\Model\User;
 use \Tecsis\Model\Category;
 use \Tecsis\Model\Product;
 
-$app->get('/admin/categories', function() {
+$app->get("/admin/categories", function(){
 
 	User::verifyLogin();
 
-	$categories = Category::listAll();
+	$search = (isset($_GET['search'])) ? $_GET['search'] : "";
+	$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
 
-	$page = new PageAdmin(); // criando uma nova página...
-	
+	if ($search != '') {
+
+		$pagination = Category::getPageSearch($search, $page);
+
+	} else {
+
+		$pagination = Category::getPage($page);
+
+	}
+
+	$pages = [];
+
+	for ($x = 0; $x < $pagination['pages']; $x++)
+	{
+
+		array_push($pages, [
+			'href'=>'/admin/categories?'.http_build_query([
+				'page'=>$x+1,
+				'search'=>$search
+			]),
+			'text'=>$x+1
+		]);
+
+	}
+
+	$page = new PageAdmin();
+
 	$page->setTpl("categories", [
-		'categories'=>$categories
-	]);		
+		"categories"=>$pagination['data'],
+		"search"=>$search,
+		"pages"=>$pages
+	]);	
+
 
 });
 
-$app->get('/admin/categories/create', function() {
+$app->get("/admin/categories/create", function(){
 
 	User::verifyLogin();
 
-	$page = new PageAdmin(); // criando uma nova página...
-	
-	$page->setTpl("categories-create");
-	
+	$page = new PageAdmin();
+
+	$page->setTpl("categories-create");	
+
 });
 
-$app->post('/admin/categories/create', function() {
+$app->post("/admin/categories/create", function(){
 
 	User::verifyLogin();
 
@@ -39,11 +68,12 @@ $app->post('/admin/categories/create', function() {
 
 	$category->save();
 
-	header("Location: /admin/categories");
-	exit;	
+	header('Location: /admin/categories');
+	exit;
+
 });
 
-$app->get("/admin/categories/:idcategory/delete", function($idcategory) {
+$app->get("/admin/categories/:idcategory/delete", function($idcategory){
 
 	User::verifyLogin();
 
@@ -53,11 +83,12 @@ $app->get("/admin/categories/:idcategory/delete", function($idcategory) {
 
 	$category->delete();
 
-	header("Location: /admin/categories");
-	exit;		
+	header('Location: /admin/categories');
+	exit;
+
 });
 
-$app->get("/admin/categories/:idcategory", function($idcategory) {
+$app->get("/admin/categories/:idcategory", function($idcategory){
 
 	User::verifyLogin();
 
@@ -65,15 +96,15 @@ $app->get("/admin/categories/:idcategory", function($idcategory) {
 
 	$category->get((int)$idcategory);
 
-	$page = new PageAdmin(); // criando uma nova página...
-	
+	$page = new PageAdmin();
+
 	$page->setTpl("categories-update", [
 		'category'=>$category->getValues()
-	]);
+	]);	
 
 });
 
-$app->post("/admin/categories/:idcategory", function($idcategory) {
+$app->post("/admin/categories/:idcategory", function($idcategory){
 
 	User::verifyLogin();
 
@@ -83,10 +114,10 @@ $app->post("/admin/categories/:idcategory", function($idcategory) {
 
 	$category->setData($_POST);
 
-	$category->save();
-	
-	header("Location: /admin/categories");
-	exit;	
+	$category->save();	
+
+	header('Location: /admin/categories');
+	exit;
 
 });
 
