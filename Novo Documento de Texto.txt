@@ -1,7 +1,0 @@
-Para rodar o PHP na versão original do projeto, deve-se nas variáveis de ambiente:
-
-1 - Retirar a linha sobre PHP-7.3.2 
-2 - Incluir  a linha C:\xampp\php
-
-OK ?
-
